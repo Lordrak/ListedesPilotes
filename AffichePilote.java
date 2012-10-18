@@ -6,7 +6,7 @@ import java.awt.event.ActionListener;
 import java.sql.*;
 public class AffichePilote extends JFrame {
 	
-	private JPanel panel;
+
 	private JLabel lblnom ;
 	private JLabel lblprenom ;
 	private JButton btnSuiv;
@@ -18,7 +18,7 @@ public class AffichePilote extends JFrame {
 	Connection con;
 
 	AffichePilote(){
-		panel = new JPanel();
+	
 
 		this.setTitle("Affiche de Pilote");
 		this.setLocation(450,300);
@@ -28,32 +28,35 @@ public class AffichePilote extends JFrame {
 		btnSuiv = new JButton("Suivant");
 		btnPre = new JButton("Précédent");
 		String  title[] = {"Nom", "Prénom"};
-		Object[][] data2 = null;
-
-		
+		int nb = 10;
+		Object[][] data = new Object[nb][2];
 		try { 
 		       Class.forName("org.postgresql.Driver") ; 
 		       con = DriverManager.getConnection("jdbc:postgresql:dbraffin", "rraffin", "auxerre972"); 
 		       st = con.createStatement();
 		       rs = st.executeQuery("SELECT * FROM pilotes");
+		       int i=0;
+		      System.out.println(rs.getFetchSize()); 
+		       
+		       
 		    // Pour accéder à chacun des tuples du résultat de la requête : 
 		       while(rs.next()){
-		    	   Object[][] data = new Object[rs.getFetchSize()][2];
+		    	   
 		    	   String nom = rs.getString("nompilote");
 		    	   String prenom = rs.getString("prenompilote");
 		    	   
 		    	   lblnom = new JLabel(nom);
 		    	   lblprenom = new JLabel(prenom);
-		    	   System.out.println(nom+"  "+prenom+" "+rs.getFetchSize()) ;
-		    	   data[rs.getFetchSize()][1] = nom;
-		    	   data[rs.getFetchSize()][2] = prenom;
-		    	   panel.setLayout(new GridLayout(rs.getFetchSize(),2));
-		    	   data2=data;
+		    	   System.out.println(nom+" "+prenom) ;
+		    	   data[i][0] = nom;
+		    	   data[i][1] = prenom;
+		    	   
+		    	   
+		    	   i++;
 		       }
 		    rs.close() ; 
 		    
-		    JTable tableau = new JTable(data2, title);
-		    this.getContentPane().add(new JScrollPane(tableau));
+
 		}
 		catch(ClassNotFoundException erreur) { 
 		       System.out.println("Driver non chargé !"+erreur); 
@@ -65,7 +68,8 @@ public class AffichePilote extends JFrame {
 
 
 		
-		this.getContentPane().add(panel);
+	    JTable tableau = new JTable(data, title);
+	    this.getContentPane().add(new JScrollPane(tableau));
 		this.setVisible(true);
 	}
 
