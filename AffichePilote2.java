@@ -56,7 +56,7 @@ public class AffichePilote2 extends JFrame {
 		
 
 
-		
+		panel.setLayout(new GridLayout(10,3));
 		this.getContentPane().add(panel);
 		this.setVisible(true);
 	}
