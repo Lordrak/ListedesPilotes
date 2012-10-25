@@ -15,6 +15,8 @@ public class AffichePilote extends JFrame {
 	String prenom ;
 	ResultSet rs ;
 	Statement st;
+	ResultSet rs2 ;
+	Statement st2;
 	Connection con;
 
 	AffichePilote(){
@@ -24,21 +26,26 @@ public class AffichePilote extends JFrame {
 		this.setLocation(450,300);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setSize(400,300);
-		this.setResizable(false);
+		this.setResizable(true);
 		btnSuiv = new JButton("Suivant");
 		btnPre = new JButton("Précédent");
 		String  title[] = {"Nom", "Prénom"};
 		int nb = 10;
-		Object[][] data = new Object[nb][2];
+		int taille=0 ;
 		try { 
 		       Class.forName("org.postgresql.Driver") ; 
-		       con = DriverManager.getConnection("jdbc:postgresql:dbraffin", "rraffin", "auxerre972"); 
+		       con = DriverManager.getConnection("jdbc:postgresql:dbraffin", "rraffin", "auxerre972");
 		       st = con.createStatement();
 		       rs = st.executeQuery("SELECT * FROM pilotes");
+		       st2 = con.createStatement();
+		       rs2= st2.executeQuery("Select * from pilotes;");
+		       System.out.println(rs2);
 		       int i=0;
-		      System.out.println(rs.getFetchSize()); 
 		       
-		       
+		      while(rs2.next()){
+		    	  taille++;
+		      }
+		       Object[][] data = new Object[taille][2];  
 		    // Pour accéder à chacun des tuples du résultat de la requête : 
 		       while(rs.next()){
 		    	   
@@ -54,8 +61,11 @@ public class AffichePilote extends JFrame {
 		    	   
 		    	   i++;
 		       }
+		       
 		    rs.close() ; 
-		    
+		    rs2.close();
+		    JTable tableau = new JTable(data, title);
+		    this.getContentPane().add(new JScrollPane(tableau));
 
 		}
 		catch(ClassNotFoundException erreur) { 
@@ -68,8 +78,7 @@ public class AffichePilote extends JFrame {
 
 
 		
-	    JTable tableau = new JTable(data, title);
-	    this.getContentPane().add(new JScrollPane(tableau));
+
 		this.setVisible(true);
 	}
 
